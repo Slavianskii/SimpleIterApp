@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:screenOrientation="portrait"
+        tools:context=".MainActivity">
+
+    <Button
+            android:id="@+id/strt_button"
+            android:layout_width="188dp"
+            android:layout_height="46dp"
+            android:text="Start"
+            android:onClick="start_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="MissingConstraints"
+            android:layout_marginLeft="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"/>
+
+    <EditText
+    android:id="@+id/matrix_enter"
+    android:layout_height="300dp"
+    android:layout_width="match_parent"
+
+        android:inputType="textMultiLine"
+
+
+    android:hint="Введите матрицу с диагональным преобладанием"
+    android:gravity="top"
+    tools:ignore="MissingConstraints"/>
+
+    <EditText
+    android:id="@+id/free_members"
+    app:layout_constraintTop_toBottomOf="@id/matrix_enter"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:hint="Введите свободные члены"
+    android:inputType="phone"
+
+    />
+
+    <EditText
+    android:id="@+id/start_accuracy"
+    app:layout_constraintTop_toBottomOf="@id/free_members"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:hint="Введите начальное приближение"
+        android:inputType="phone"
+    />
+
+    <EditText
+            android:id="@+id/epsilon"
+            app:layout_constraintTop_toBottomOf="@id/start_accuracy"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:hint="Введите точность"
+        android:inputType="phone"
+    />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
