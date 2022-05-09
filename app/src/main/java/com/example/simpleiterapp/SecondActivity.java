@@ -1,9 +1,5 @@
 package com.example.simpleiterapp;
 
-
-//import Jama.Matrix;
-
-
 import Jama.Matrix;
 import android.os.Bundle;
 import android.view.View;
@@ -44,7 +40,7 @@ public class SecondActivity extends AppCompatActivity {
 
         epsilon = Double.parseDouble(arguments.get("epsilon").toString());
         dim = vct_B.size();
-        accuracy = String.valueOf(epsilon).split("\\.")[1].length();
+        accuracy = String.valueOf(epsilon).split("\\.")[1].length() + 1;
 
         List<Double> start_x = new ArrayList<Double>();
         for(String item : arguments.get("x_0").toString().split(" ")){
@@ -67,22 +63,12 @@ public class SecondActivity extends AppCompatActivity {
             i++;
         }
 
-        /*
-        for(ArrayList<Double> line:mtrx){
-            int j = 0;
-            for(double item : line){
-                matrix[i][j] = item;
-                j++;
-            }
-            i++;
-        }*/
-
         start_iter();
 
     }
-    public void mAsolve(){
-        for (int i = 0; i < dim; i++) {
-            vector_B[i] /= matrix[i][i];
+    public void mAsolve(){                  //Меняем знак у недиагональных элементов
+        for (int i = 0; i < dim; i++) {     //Делим их и свободные члены на диагональные элементы
+            vector_B[i] /= matrix[i][i];    //Зануляем диагональные элементы
             for (int j = 0; j < dim; j++) {
                 if(j != i){
                     matrix[i][j] *= -1;
@@ -93,12 +79,12 @@ public class SecondActivity extends AppCompatActivity {
         }
     }
 
-    public String abg(){
+    public String abg(){//Находим числовые характеристики
         double alpha = -1.0;
         double beta = -1.0;
         double gamma = 0.0;
         double summ = 0.0;
-        for(double[] line:matrix){
+        for(double[] line:matrix){//Считаем альфа и гамма
             for(double item:line){
                 summ += Math.abs(item);
                 gamma += Math.pow(item, 2);
@@ -106,17 +92,18 @@ public class SecondActivity extends AppCompatActivity {
             if(summ > alpha) alpha = summ;
             summ = 0.0;
         }
-        for(int i = 0; i < dim; i++){
+        for(int i = 0; i < dim; i++){//Считаем бета
             for (int j = 0; j < dim; j++) {
                 summ += Math.abs(matrix[j][i]);
             }
             if(summ > beta) beta = summ;
             summ = 0.0;
         }
-        chara = Math.min(alpha, Math.min(beta, gamma));
+        chara = Math.min(alpha, Math.min(beta, gamma));//Находим минимальное из них
         TextView txt = findViewById(R.id.char_view);
         txt.setText("a, b, g: " + Double.toString(alpha) + ", " +
                 Double.toString(beta) + ", " + Double.toString(gamma));
+        //Возвращаем найденную информацию
         if(chara == alpha){
             return "alpha";
         }
@@ -126,20 +113,20 @@ public class SecondActivity extends AppCompatActivity {
         return "gamma";
     }
 
-    public void start_iter(){
-        mAsolve();
-        String p = abg();
-
+    public void start_iter(){//Начало итераций
+        mAsolve();//ПРиводим систему к нужному виду
+        String p = abg();//Нахадим числовую характеристики
         TextView txt_mtr = findViewById(R.id.matrix_view);
         TextView txt_n = findViewById(R.id.iter_view);
-
         matrix_A = new Matrix(matrix);
         matrix_B = new Matrix(vector_B, dim);
         Matrix tmp_x_0 = new Matrix(x_0, dim);
+        //Проведение первой итерации
         cur_x = matrix_A.times(tmp_x_0);
         cur_x = cur_x.plus(matrix_B);
         current_n++;
         double ro = 0.0;
+        //Выбираем пространство и находим в нём расстояние между х0 и х1
         if(p == "alpha" && chara < 1.0){
             for (int i = 0; i < dim; i++) {
                 double tmp = cur_x.get(i, 0) - tmp_x_0.get(i, 0);
@@ -162,6 +149,7 @@ public class SecondActivity extends AppCompatActivity {
             toast.show();
             this.finish();
         }
+        //Вычисляем количество итераций
         max_n = (int) (Math.log((epsilon * (1.0 - chara))/ro)/Math.log(chara) + 1);
         txt_n.setText("n: " + Integer.toString(current_n) + "/" + Integer.toString(max_n));
         txt_mtr.setText("x" + Integer.toString(current_n) + "\n" + MatrixToString(cur_x));
@@ -179,7 +167,6 @@ public class SecondActivity extends AppCompatActivity {
     }
 
 
-
     public void clear_click(View view){
         this.finish();
     }
@@ -188,7 +175,7 @@ public class SecondActivity extends AppCompatActivity {
         if(current_n < max_n){
             TextView txt_mtr = findViewById(R.id.matrix_view);
             TextView txt_n = findViewById(R.id.iter_view);
-
+            //Проводим n-ую итерацию
             cur_x = matrix_A.times(cur_x);
             cur_x = cur_x.plus(matrix_B);
             current_n++;
